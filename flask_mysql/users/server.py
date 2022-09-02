@@ -8,7 +8,6 @@ app=Flask(__name__)
 def index():
     return redirect('/users')
 
-
 @app.route('/users')
 def users():
     return render_template("users.html",users=User.get_all())
