@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Planner Dashboard</title>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Welcome {{ user.first_name }}!</h1>
+        <div class="container">
+            <a href="/activities/create">Add to your planner</a>
+            <a href="/logout">Logout</a>
+        </div>
+        <div class="container">
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>Name</tr>
+                    <tr>Cooktime under 30min?</tr>
+                    <tr>Options</tr>
+                </thead>
+                <tbody>
+                    {% for activity in activities: %}
+                    <tr>
+                        <td>
+                            {{activity.name}} by {{activity.user.first_name}}
+                        </td>
+                        <!-- <td>
+                            {% if activity.under_30: %}
+                            Yes
+                            {% else: %}
+                            No
+                            {% endif %}
+                        </td> -->
+                        <td>
+                            <a href="/activities/{{activity.id}}">view instructions</a>
+                            <!--edit and delete conditional-->
+                            {% if activity.user.id == user.id: %}
+                            <a href="/activities/edit/{{activity.id}}">edit</a>
+                            <a href="/activities/delete/{{activity.id}}">delete</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
