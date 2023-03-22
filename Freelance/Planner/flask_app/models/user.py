@@ -1,12 +1,16 @@
+from flask_app import app
 from flask_app.config.mysqlconnection import connectToMySQL
 from flask import flash
+from flask_bcrypt import Bcrypt
+from flask_app.models import activity
 import re	# the regex module
-EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 
+bcrypt=Bcrypt(app)
+EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 
 class User:
     """class user in function."""
-    # db = "login_registration_schema"
+    # db = "planner_schema"
     def __init__(self, data):
         self.id = data['id']
         self.first_name = data['first_name']
@@ -19,14 +23,14 @@ class User:
     @classmethod
     def get_by_id(cls,data):
         query = "SELECT * FROM users WHERE id = %(id)s;"
-        results = connectToMySQL('login_registration_schema').query_db(query,data)
+        results = connectToMySQL('planner_schema').query_db(query,data)
         return cls(results[0])
 
     @classmethod
     def get_all(cls):
         """GET * users."""
         query = "SELECT * FROM users;"
-        results = connectToMySQL('login_registration_schema').query_db(query)
+        results = connectToMySQL('planner_schema').query_db(query)
         users = []
         for row in results:
             users.append (cls(row))
@@ -35,7 +39,7 @@ class User:
     @classmethod
     def get_by_email(cls,data):
         query = "SELECT * FROM users WHERE email = %(email)s;"
-        results = connectToMySQL('login_registration_schema').query_db(query,data)
+        results = connectToMySQL('planner_schema').query_db(query,data)
         print ("OVER HERE", results)
         if results:
             print ("Right Here", results)
@@ -47,14 +51,14 @@ class User:
     def save(cls, data):
         query = "INSERT INTO users (first_name, last_name, email, password) " \
             "VALUES (%(first_name)s, %(last_name)s, %(email)s, %(password)s);"
-        result = connectToMySQL('login_registration_schema').query_db(query, data)
+        result = connectToMySQL('planner_schema').query_db(query, data)
         return result
 
     @staticmethod
     def validate_user(user):
         is_valid = True
         query = "SELECT * FROM users WHERE email = %(email)s;"
-        results = connectToMySQL('login_registration_schema').query_db(query,user)
+        results = connectToMySQL('planner_schema').query_db(query,user)
         if len(results) >= 1:
             flash("Email already taken.","register")
             is_valid=False
