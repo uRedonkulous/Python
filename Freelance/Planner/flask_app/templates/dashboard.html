@@ -18,25 +18,18 @@
         <div class="container">
             <table class="table table-dark table-striped">
                 <thead>
-                    <tr>Name</tr>
-                    <tr>Cooktime under 30min?</tr>
+                    <tr>Activity Name</tr>
+                    <tr>Activity Duration</tr>
                     <tr>Options</tr>
                 </thead>
                 <tbody>
                     {% for activity in activities: %}
                     <tr>
                         <td>
-                            {{activity.name}} by {{activity.user.first_name}}
+                            {{activities.activity}} by {{activity.user.first_name}}
                         </td>
-                        <!-- <td>
-                            {% if activity.under_30: %}
-                            Yes
-                            {% else: %}
-                            No
-                            {% endif %}
-                        </td> -->
                         <td>
-                            <a href="/activities/{{activity.id}}">view instructions</a>
+                            <a href="/activities/{{activity.id}}">view activity</a>
                             <!--edit and delete conditional-->
                             {% if activity.user.id == user.id: %}
                             <a href="/activities/edit/{{activity.id}}">edit</a>

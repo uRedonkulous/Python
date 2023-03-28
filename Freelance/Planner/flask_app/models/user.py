@@ -11,21 +11,27 @@ EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 class User:
     """class user in function."""
     # db = "planner_schema"
-    def __init__(self, data):
+    def __init__(self,data):
         self.id = data['id']
         self.first_name = data['first_name']
         self.last_name = data['last_name']
         self.email = data['email']
-        self.password = data['password']
+        if 'password' in data: #  Optional Statement
+            self.password = data['password']
+        else:
+            self.password = None
         self.created_at = data['created_at']
         self.updated_at = data['updated_at']
 
+#  GET user by ID
     @classmethod
-    def get_by_id(cls,data):
+    def get_by_id(cls,user_id):
+        data = {"id":user_id}
         query = "SELECT * FROM users WHERE id = %(id)s;"
-        results = connectToMySQL('planner_schema').query_db(query,data)
-        return cls(results[0])
+        result = connectToMySQL('planner_schema').query_db(query,data)
+        return cls(result[0])
 
+#  GET ALL users
     @classmethod
     def get_all(cls):
         """GET * users."""
@@ -41,11 +47,9 @@ class User:
         query = "SELECT * FROM users WHERE email = %(email)s;"
         results = connectToMySQL('planner_schema').query_db(query,data)
         print ("OVER HERE", results)
-        if results:
-            print ("Right Here", results)
-            return cls(results[0])
-        else:
-            return None
+        if len(results) < 1:
+            return False
+        return cls(results[0])
 
     @classmethod
     def save(cls, data):

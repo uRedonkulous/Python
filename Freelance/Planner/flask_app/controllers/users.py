@@ -1,6 +1,7 @@
 from flask import render_template, request, redirect,session,flash
 from flask_app import app
 from flask_app.models.user import User
+from flask import flash
 from flask_bcrypt import Bcrypt
 bcrypt = Bcrypt(app)
 
@@ -23,27 +24,26 @@ def register():
     session['user_id'] = id
     return redirect('/dashboard')
 
-@app.route('/login', methods=['POST'])
+@app.route("/login", methods=['POST']) #  Login and Redirect to dashboard
 def login():
     user = User.get_by_email(request.form)
-
     if not user:
         flash("Invalid Email","login")
         return redirect('/')
     if not bcrypt.check_password_hash(user.password, request.form['password']):
         flash("Invalid Password","login")
         return redirect('/')
-    session['user_id'] = user.id
-    return redirect('/dashboard')
+    session["user_id"] = user.id
+    return redirect("/activities/dashboard")
 
-@app.route('/dashboard')
-def dashboard():
-    if 'user_id' not in session:
-        redirect('/logout')
-    data ={
-        'id':session['user_id']
-    }
-    return render_template("dashboard.html",user=User.get_by_id(data))
+# @app.route('/dashboard')
+# def dashboard():
+#     if 'user_id' not in session:
+#         redirect('/logout')
+#     data ={
+#         'id':session['user_id']
+#     }
+#     return render_template("dashboard.html",user=User.get_by_id(data))
 
 @app.route('/logout')
 def logout():
