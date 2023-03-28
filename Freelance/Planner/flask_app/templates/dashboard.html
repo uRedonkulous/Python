@@ -26,15 +26,8 @@
                     {% for activity in activities: %}
                     <tr>
                         <td>
-                            {{activity.name}} by {{activity.user.first_name}}
+                            {{activities.activity}} by {{activity.user.first_name}}
                         </td>
-                        <!-- <td>
-                            {% if activity.under_30: %}
-                            Yes
-                            {% else: %}
-                            No
-                            {% endif %}
-                        </td> -->
                         <td>
                             <a href="/activities/{{activity.id}}">view activity</a>
                             <!--edit and delete conditional-->

@@ -7,7 +7,7 @@ from flask import flash
 
 #  Activities Dashboard after Login/Registering
 @app.route("/activities/dashboard") 
-def activities_dash():
+def activity_dash():
     if "user_id" not in session:
         flash("You must be logged in to view page")
         return redirect("/")
@@ -24,26 +24,43 @@ def activity_desc(activity_id):
     return render_template('activity_desc.html',user=user,activity=activity)
 
 #  Creating a Activity POST to form to INSERT into DB
-@app.route('/activities/create')
+@app.route('/activities/create', methods=['GET', 'POST'])
+@app.route('/activities/create', methods=['GET', 'POST'])
 def create_activity():
     if "user_id" not in session:
         return redirect('/')
     user = User.get_by_id(session["user_id"])
-    return render_template("create_activity.html", user=user)
+    if request.method == 'POST':
+        activity = {
+            "activity": request.form["activity"],
+            "duration":request.form["duration"], 
+            "description":request.form["description"], 
+            "user_id":session["user_id"]
+        }
+        valid_activity = Activity.create_activity(activity)
+        if valid_activity:
+            return redirect('/activities/dashboard')
+        else:
+            flash("Error creating activity.")
+            return redirect('/activities/create')
+    else:
+        return render_template("create_activity.html", user=user)
+
 
 #  Create activity Validation
 @app.route('/activities',methods=["POST"])
 def create_activities():
     activity = {
-        "activity_name": request.form["activity_name"],
+        "activity": request.form["activity"],
         "duration":request.form["duration"], 
         "description":request.form["description"], 
         "user_id":session["user_id"]
     }
-    valid_activity=Activity.create_valid_activity(activity)
+    valid_activity=Activity.create_activity(activity)
     if valid_activity:
         return redirect('/activities/dashboard')
     return redirect('/activities/create')
+
 
 #  Edit activity
 @app.route('/activities/edit/<int:activity_id>')
