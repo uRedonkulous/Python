@@ -21,22 +21,31 @@
         <div class="container">
             <table class="table table-dark table-striped">
                 <thead>
-                    <tr>Activity Name</tr>
-                    <tr>Activity Duration</tr>
-                    <tr>Options</tr>
+                    <tr>
+                        <th>Activity Name</th>
+                        <th>Activity Duration</th>
+                        <th>Activity Description</th>
+                        <th>Options</th>
+                    </tr>
                 </thead>
                 <tbody>
                     {% for activity in activities: %}
                     <tr>
                         <td>
-                            {{activities.activity}} by {{activity.user.first_name}}
+                            {{activity.activity}}
                         </td>
                         <td>
-                            <a href="/activities/{{activity.id}}">view activity</a>
-                            <!--edit and delete conditional-->
+                            {{activity.duration}}
+                        </td>
+                        <td>
+                            {{activity.description}}
+                        </td>
+                        <td>
+                            <a href="/activities/{{activity.id}}">View activity</a>
+                            <!--Only Creators/Founders can see-->
                             {% if activity.user.id == user.id: %}
-                            <a href="/activities/edit/{{activity.id}}">edit</a>
-                            <a href="/activities/delete/{{activity.id}}">delete</a>
+                            <a href="/activities/edit/{{activity.id}}">Edit</a>
+                            <a href="/activities/delete/{{activity.id}}">Delete</a>
                             {% endif %}
                         </td>
                     </tr>
