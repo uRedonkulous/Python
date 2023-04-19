@@ -4,6 +4,8 @@ from flask import flash
 from flask_app.models import user
 import re
 
+# TESTING
+
 class Activity:
     """Activity function"""
     # db = "planner_schema"

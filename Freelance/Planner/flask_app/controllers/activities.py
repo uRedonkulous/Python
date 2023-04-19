@@ -4,6 +4,7 @@ from flask_app.models.user import User
 from flask_app.models.activity import Activity
 from flask import flash
 
+# TESTING
 
 #  Activities Dashboard after Login/Registering
 @app.route("/activities/dashboard") 
