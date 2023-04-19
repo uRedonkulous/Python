@@ -27,21 +27,22 @@ class Activity:
             JOIN users ON users.id = activities.user_id 
             WHERE activities.id = %(id)s; """
         result = connectToMySQL('planner_schema').query_db(query,data)
-        print("result of query")
-        print(result)
-        result=result[0]
-        activity=cls(result)
-        activity.user = user.User(
-                        {
-                    "id":result["user_id"],
-                    "first_name":result["first_name"],
-                    "last_name":result["last_name"],
-                    "email":result["email"],
-                    "created_at":result["uc"],
-                    "updated_at":result["uu"]
-                }
-            )
-        return activity
+        if result:
+            result=result[0]
+            activity=cls(result)
+            activity.user = user.User(
+                            {
+                        "id":result["user_id"],
+                        "first_name":result["first_name"],
+                        "last_name":result["last_name"],
+                        "email":result["email"],
+                        "created_at":result["uc"],
+                        "updated_at":result["uu"]
+                    }
+                )
+            return activity
+        else:
+            return None
     
     @classmethod #  GET * FROM activities
     def get_all(cls):
@@ -94,13 +95,6 @@ class Activity:
             activities.append (activity_obj)
         return activities
 
-    # @classmethod
-    # def create_activity(cls, activity_dict, user_id):
-    #     if cls.is_valid(activity_dict, user_id):
-    #         query = "INSERT INTO activities (activity, duration, description, user_id, created_at, updated_at) VALUES (%(activity)s, %(duration)s, %(description)s, %(user_id)s, NOW(), NOW());"
-    #         return connectToMySQL('planner_schema').query_db(query, activity_dict)
-    #     return False
-    
     @classmethod
     def create_activity(cls,activity_dict):
         if not cls.is_valid(activity_dict):
@@ -109,20 +103,6 @@ class Activity:
         activity_id = connectToMySQL('planner_schema').query_db(query, activity_dict)
         activity = cls.get_by_id(activity_id)
         return activity
-
-    # @classmethod
-    # def is_valid(cls, activity_dict, user_id):
-    #     errors = []
-    #     if not activity_dict["activity"]:
-    #         errors["activity"] = "Activity name is required."
-    #     if not activity_dict["duration"]:
-    #         errors["duration"] = "Duration is required."
-    #     if not activity_dict["description"]:
-    #         errors["description"] = "Description is required."
-    #     if not user_id:
-    #         errors["user_id"] = "User ID is required."
-    #     return errors
-
 
     @staticmethod
     def is_valid(activity_dict):
@@ -143,7 +123,7 @@ class Activity:
     def update_activity(cls, activity_dict, session_id):
         activity = cls.get_by_id(activity_dict["id"])
         if activity.user.id != session_id:
-            flash("You are not the founding member!")
+            flash("You must be the founding member!")
             return False
         if not cls.is_valid(activity_dict):
             return False
@@ -153,3 +133,10 @@ class Activity:
         result = connectToMySQL('planner_schema').query_db(query,activity_dict)
         activity = cls.get_by_id(activity_dict["id"])
         return activity
+    
+    @classmethod #  DELETE activity
+    def delete_activity_by_id(cls, activity_id):
+        data={"id":activity_id}
+        query="DELETE FROM activities WHERE id = %(id)s"
+        connectToMySQL('planner_schema').query_db(query,data)
+        return activity_id

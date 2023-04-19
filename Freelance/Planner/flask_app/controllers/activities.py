@@ -19,10 +19,11 @@ def activity_dash():
 
 #  Get activity
 @app.route('/activities/<int:activity_int>')
-def activity_desc(activity_id):
+def view_activity(activity_id):
     user=User.get_by_id(session['id'])
     activity=Activity.get_by_id(activity_id)
-    return render_template('activity_desc.html',user=user,activity=activity)
+    return render_template('view.html',user=user,activity=activity)
+
 
 #  Creating a Activity POST to form to INSERT into DB
 @app.route('/activities/create')
@@ -55,7 +56,7 @@ def edit_activity(activity_id):
         return redirect('/')
     activity=Activity.get_by_id(activity_id)
     user = User.get_by_id(session["user_id"])
-    valid_activity=Activity.is_valid(activity_id, session["user_id"])
+    valid_activity=Activity.is_valid
     if valid_activity:
         return render_template('/edit_activity.html', user=user, activity=activity)
     else:
@@ -80,5 +81,5 @@ def update_activity(activity_id):
 @app.route('/activities/delete/<int:activity_id>')
 def delete_activity(activity_id):
     Activity.delete_activity_by_id(activity_id)
-    return render_template('/activities/dashboard')
+    return redirect('/activities/dashboard')
 
