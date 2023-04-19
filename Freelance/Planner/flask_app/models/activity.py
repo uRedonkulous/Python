@@ -4,6 +4,8 @@ from flask import flash
 from flask_app.models import user
 import re
 
+# TESTING
+
 class Activity:
     """Activity function"""
     # db = "planner_schema"
@@ -92,20 +94,42 @@ class Activity:
             activities.append (activity_obj)
         return activities
 
+    # @classmethod
+    # def create_activity(cls, activity_dict, user_id):
+    #     if cls.is_valid(activity_dict, user_id):
+    #         query = "INSERT INTO activities (activity, duration, description, user_id, created_at, updated_at) VALUES (%(activity)s, %(duration)s, %(description)s, %(user_id)s, NOW(), NOW());"
+    #         return connectToMySQL('planner_schema').query_db(query, activity_dict)
+    #     return False
+    
     @classmethod
-    def create_activity(cls, activity_dict):
-        if cls.is_valid(activity_dict):
-            query = "INSERT INTO activities (activity, duration, description, user_id, created_at, updated_at) VALUES (%(activity)s, %(duration)s, %(description)s, %(user_id)s, NOW(), NOW());"
-            return connectToMySQL('activities_schema').query_db(query, activity_dict)
-        return False
+    def create_activity(cls,activity_dict):
+        if not cls.is_valid(activity_dict):
+            return False
+        query = """INSERT INTO activities (activity, duration, description, user_id) VALUES (%(activity)s, %(duration)s, %(description)s,%(user_id)s);"""
+        activity_id = connectToMySQL('planner_schema').query_db(query, activity_dict)
+        activity = cls.get_by_id(activity_id)
+        return activity
+
+    # @classmethod
+    # def is_valid(cls, activity_dict, user_id):
+    #     errors = []
+    #     if not activity_dict["activity"]:
+    #         errors["activity"] = "Activity name is required."
+    #     if not activity_dict["duration"]:
+    #         errors["duration"] = "Duration is required."
+    #     if not activity_dict["description"]:
+    #         errors["description"] = "Description is required."
+    #     if not user_id:
+    #         errors["user_id"] = "User ID is required."
+    #     return errors
 
 
-    @classmethod
+    @staticmethod
     def is_valid(activity_dict):
         valid=True
         flash_string = " field is required and must be at least 3 characters."
         if len(activity_dict["activity"]) < 3:
-            flash("Name"+ flash_string)
+            flash("Activity"+ flash_string)
             valid = False
         if len(activity_dict["duration"]) < 3:
             flash("Duration"+ flash_string)
