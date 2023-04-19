@@ -24,27 +24,12 @@ def activity_desc(activity_id):
     return render_template('activity_desc.html',user=user,activity=activity)
 
 #  Creating a Activity POST to form to INSERT into DB
-@app.route('/activities/create', methods=['GET', 'POST'])
-@app.route('/activities/create', methods=['GET', 'POST'])
+@app.route('/activities/create')
 def create_activity():
     if "user_id" not in session:
         return redirect('/')
     user = User.get_by_id(session["user_id"])
-    if request.method == 'POST':
-        activity = {
-            "activity": request.form["activity"],
-            "duration":request.form["duration"], 
-            "description":request.form["description"], 
-            "user_id":session["user_id"]
-        }
-        valid_activity = Activity.create_activity(activity)
-        if valid_activity:
-            return redirect('/activities/dashboard')
-        else:
-            flash("Error creating activity.")
-            return redirect('/activities/create')
-    else:
-        return render_template("create_activity.html", user=user)
+    return render_template("create_activity.html", user=user)
 
 
 #  Create activity Validation
@@ -69,10 +54,12 @@ def edit_activity(activity_id):
         return redirect('/')
     activity=Activity.get_by_id(activity_id)
     user = User.get_by_id(session["user_id"])
-    valid_activity=Activity.is_valid
+    valid_activity=Activity.is_valid(activity_id, session["user_id"])
     if valid_activity:
         return render_template('/edit_activity.html', user=user, activity=activity)
-    return ('/activities/edit/<int:activity_id>')
+    else:
+        flash("You do not have permission to edit this activity.")
+        return ('/activities/edit/<int:activity_id>')
 
 # #  Update Activity
 @app.route("/activities/<int:activity_id>", methods=["POST"])
