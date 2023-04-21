@@ -21,7 +21,7 @@ class Activity:
     @classmethod
     def get_by_id(cls,activity_id):
         data = {"id": activity_id}
-        query = """SELECT activities.id, activities.activity, activities.genre, activities.city, activities.created_at, activities.updated_at,
+        query = """SELECT activities.id, activities.activity, activities.duration, activities.description, activities.created_at, activities.updated_at,
 		users.id AS user_id, users.first_name AS first_name, users.last_name AS last_name, users.email AS email, users.created_at AS uc, users.updated_at AS uu
             FROM activities 
             JOIN users ON users.id = activities.user_id 

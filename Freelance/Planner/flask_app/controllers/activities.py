@@ -46,7 +46,8 @@ def create_activities():
     valid_activity=Activity.create_activity(activity)
     if valid_activity:
         return redirect('/activities/dashboard')
-    return redirect('/activities/create')
+    else:
+        return redirect('/activities/create')
 
 
 #  Edit activity
@@ -58,17 +59,15 @@ def edit_activity(activity_id):
     user = User.get_by_id(session["user_id"])
     valid_activity=Activity.is_valid
     if valid_activity:
-        return render_template('/edit_activity.html', user=user, activity=activity)
-    else:
-        flash("You do not have permission to edit this activity.")
-        return ('/activities/edit/<int:activity_id>')
+        return render_template('edit_activity.html', user=user, activity=activity)
+    return redirect('/activities/edit/<int:activity_id>')
 
 # #  Update Activity
 @app.route("/activities/<int:activity_id>", methods=["POST"])
 def update_activity(activity_id):
     activity = {
         "id" : activity_id,
-        "activity_name" : request.form["activity_name"],
+        "activity" : request.form["activity"],
         "duration" : request.form["duration"],
         "description" : request.form["description"]
     }
